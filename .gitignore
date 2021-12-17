@@ -1,2 +1,6 @@
 package-lock.json
 **/.vscode/
+
+# terraform
+terraform.tfstate
+.terraform*
