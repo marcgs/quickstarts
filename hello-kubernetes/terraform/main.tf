@@ -22,6 +22,18 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
 }
 
+provider "helm" {
+  debug = true
+  kubernetes {
+    host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
+    username               = azurerm_kubernetes_cluster.aks.kube_config.0.username
+    password               = azurerm_kubernetes_cluster.aks.kube_config.0.password
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
+  }
+}
+
 locals {
   resource_group_name = "dapr-${var.environment}-resources"
 }
@@ -55,16 +67,18 @@ resource "kubernetes_namespace" "dapr-system" {
   depends_on        = [azurerm_kubernetes_cluster.aks]
 }
 
-#resource "helm_release" "dapr" {
-#  name       = "dapr"
-#  repository = "https://dapr.github.io/helm-charts"
-#  chart      = "dapr/dapr"
-#  version    = "1.5"
-#  namespace = kubernetes_namespace.dapr-system.metadata[0].name
-#  timeout   = 300
+resource "helm_release" "dapr" {
+  name       = "dapr"
+  repository = "https://dapr.github.io/helm-charts"
+  chart      = "dapr"
+  version    = "1.5.1"
+  namespace = kubernetes_namespace.dapr-system.metadata[0].name
+  timeout   = 300
 
   #set {
   #  name  = "global.ha.enabled"
   #  value = true
   #}
-#}
+
+  depends_on        = [azurerm_kubernetes_cluster.aks]
+}
