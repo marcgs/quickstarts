@@ -326,6 +326,22 @@ kubectl delete -f .
 
 This will spin down each resource defined by the .yaml files in the `deploy` directory, including the state component.
 
+## Provisioning and deploying the sample - the quick way
+
+Create an AKS cluster by running the following command `terraform/aks` folder:
+
+```bash
+terraform plan
+terraform apply --auto-approve
+```
+
+Deploy Dapr, together with the redis state store, and the node and python applications. In the `terraform/helm` folder run:
+
+```bash
+terraform plan
+terraform apply --auto-approve
+```
+
 ## Deploying your code
 
 Now that you're successfully working with Dapr, you probably want to update the code to fit your scenario. The Node.js and Python apps that make up this quickstart are deployed from container images hosted on a private [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/). To create new images with updated code, you'll first need to install docker on your machine. Next, follow these steps:
