@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 2.72.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.4"
+    }
   }
 }
 
@@ -29,6 +33,9 @@ provider "kubernetes" {
   client_certificate     = base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.client_certificate)
   client_key             = base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.client_key)
   cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.cluster_ca_certificate)
+  experiments {
+      manifest_resource = true
+  }
 }
 
 provider "helm" {
@@ -46,6 +53,12 @@ provider "helm" {
 resource "kubernetes_namespace" "dapr-system" {
   metadata {
     name = "dapr-system"
+  }
+}
+
+resource "kubernetes_namespace" "app" {
+  metadata {
+    name = "app"
   }
 }
 
@@ -68,5 +81,26 @@ resource "helm_release" "redis" {
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
   version    = "15.6.7"
+  namespace = kubernetes_namespace.app.metadata[0].name
   timeout   = 300
+}
+
+resource "helm_release" "components" {
+  name       = "components"
+  chart      = "../../helm/components"
+  namespace = kubernetes_namespace.app.metadata[0].name
+  timeout   = 300
+  depends_on = [
+    helm_release.dapr
+  ]
+}
+
+resource "helm_release" "nodeapp" {
+  name       = "nodeapp"
+  chart      = "../../helm/node"
+  namespace = kubernetes_namespace.app.metadata[0].name
+  timeout   = 300
+  depends_on = [
+    helm_release.components
+  ]
 }
