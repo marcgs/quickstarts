@@ -62,3 +62,12 @@ resource "helm_release" "dapr" {
   #  value = true
   #}
 }
+
+resource "helm_release" "redis" {
+  name       = "redis"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "redis"
+  version    = "15.6.7"
+  namespace = kubernetes_namespace.dapr-system.metadata[0].name
+  timeout   = 300
+}
