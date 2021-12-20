@@ -95,9 +95,9 @@ resource "helm_release" "components" {
   ]
 }
 
-resource "helm_release" "nodeapp" {
-  name       = "nodeapp"
-  chart      = "../../helm/node"
+resource "helm_release" "app" {
+  name       = "app"
+  chart      = "../../helm/app"
   namespace = kubernetes_namespace.app.metadata[0].name
   timeout   = 300
   depends_on = [
