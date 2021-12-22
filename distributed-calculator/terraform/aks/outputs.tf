@@ -16,6 +16,6 @@ output "kube_config" {
 }
 
 output "application_insights_name" {
-  value       = azurerm_application_insights.appi.name
+  value       = azurerm_application_insights.main.name
   description = "The Application Insights resource name."
 }
