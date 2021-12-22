@@ -14,3 +14,8 @@ output "kube_config" {
   value = azurerm_kubernetes_cluster.aks.kube_config_raw
   sensitive = true
 }
+
+output "application_insights_name" {
+  value       = azurerm_application_insights.appi.name
+  description = "The Application Insights resource name."
+}

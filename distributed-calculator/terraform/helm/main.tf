@@ -16,6 +16,11 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
+data "azurerm_application_insights" "main" {
+  name                = var.application_insights_name
+  resource_group_name = data.azurerm_resource_group.main.name
+}
+
 data "azurerm_kubernetes_cluster" "main" {
   name                = var.aks_cluster_name
   resource_group_name = data.azurerm_resource_group.main.name
@@ -103,4 +108,9 @@ resource "helm_release" "app" {
   depends_on = [
     helm_release.components
   ]
+
+  set {
+    name  = "appinsights.instrumentationKey"
+    value = data.azurerm_application_insights.main.instrumentation_key
+  }
 }
