@@ -15,5 +15,5 @@ echo "DONE"
 echo
 
 echo "Deploying dapr and distributed calculator application..."
-(cd terraform/aks; run_terraform)
+(cd terraform/helm; run_terraform)
 echo "DONE"
