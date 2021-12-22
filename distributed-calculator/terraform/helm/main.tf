@@ -84,3 +84,23 @@ resource "helm_release" "redis" {
   namespace = kubernetes_namespace.app.metadata[0].name
   timeout   = 300
 }
+
+resource "helm_release" "components" {
+  name       = "components"
+  chart      = "../../helm/components"
+  namespace = kubernetes_namespace.app.metadata[0].name
+  timeout   = 150
+  depends_on = [
+    helm_release.dapr
+  ]
+}
+
+resource "helm_release" "app" {
+  name       = "app"
+  chart      = "../../helm/app"
+  namespace = kubernetes_namespace.app.metadata[0].name
+  timeout   = 150
+  depends_on = [
+    helm_release.components
+  ]
+}
