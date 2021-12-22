@@ -15,12 +15,20 @@ provider "azurerm" {
 
 locals {
   resource_group_name = "dapr-${var.environment}-resources"
+  app_insights_name = "dapr-${var.environment}-appi"
   aks_cluster_name = "dapr-${var.environment}-aks"
 }
 
 resource "azurerm_resource_group" "rg" {
   name     = local.resource_group_name
   location = var.location
+}
+
+resource "azurerm_application_insights" "appi" {
+  name                = local.app_insights_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {
