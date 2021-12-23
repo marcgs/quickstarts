@@ -67,6 +67,12 @@ resource "kubernetes_namespace" "app" {
   }
 }
 
+resource "helm_release" "azmonitor" {
+  name       = "azmonitor"
+  chart      = "../../helm/azmonitor"
+  timeout   = 150
+}
+
 resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
@@ -104,7 +110,7 @@ resource "helm_release" "app" {
   name       = "app"
   chart      = "../../helm/app"
   namespace = kubernetes_namespace.app.metadata[0].name
-  timeout   = 150
+  timeout   = 300
   depends_on = [
     helm_release.components
   ]

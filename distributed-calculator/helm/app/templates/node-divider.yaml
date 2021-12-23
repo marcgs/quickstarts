@@ -18,6 +18,11 @@ spec:
         dapr.io/app-id: "divideapp"
         dapr.io/app-port: "4000"
         dapr.io/config: "appconfig"
+        dapr.io/log-as-json: "true"
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/"
+        prometheus.io/scheme: "http"
     spec:
       containers:
       - name: divide
