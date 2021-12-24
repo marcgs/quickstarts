@@ -27,7 +27,11 @@ spec:
     spec:
       containers:
       - name: subtract
-        image: dapriosamples/distributed-calculator-csharp:latest
+        #image: dapriosamples/distributed-calculator-csharp:latest
+        image: "{{ .Values.acr.name }}.azurecr.io/dapriosamples/distributed-calculator-csharp:{{ .Values.subtract.image_tag }}"
         ports:
         - containerPort: 80
         imagePullPolicy: Always
+        env:
+          - name: APPINSIGHTS_INSTRUMENTATIONKEY
+            value: {{ .Values.appinsights.instrumentationKey | quote }}

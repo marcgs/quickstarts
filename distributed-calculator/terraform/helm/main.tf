@@ -115,6 +115,16 @@ resource "helm_release" "app" {
     helm_release.components
   ]
 
+set {
+    name  = "acr.name"
+    value = var.acr_name
+  }
+
+  set {
+    name  = "subtract.image_tag"
+    value = var.subtract_image_tag
+  }
+
   set {
     name  = "appinsights.instrumentationKey"
     value = data.azurerm_application_insights.main.instrumentation_key

@@ -19,3 +19,8 @@ output "application_insights_name" {
   value       = azurerm_application_insights.main.name
   description = "The Application Insights resource name."
 }
+
+output "container_registry_name" {
+  value       = azurerm_container_registry.acr.name
+  description = "The Container Registy resource name."
+}

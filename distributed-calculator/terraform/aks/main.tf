@@ -17,6 +17,7 @@ locals {
   resource_group_name = "dapr-${var.environment}-resources"
   log_analytics_workspace_name = "dapr-${var.environment}-logsws"
   app_insights_name = "dapr-${var.environment}-appi"
+  container_registry_name = "dapr${var.environment}acr"
   aks_cluster_name = "dapr-${var.environment}-aks"
 }
 
@@ -54,6 +55,13 @@ resource "azurerm_application_insights" "main" {
   application_type      = "web"
 }
 
+resource "azurerm_container_registry" "acr" {
+  name                = local.container_registry_name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku                 = "Premium"
+}
+
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = local.aks_cluster_name
   location            = azurerm_resource_group.rg.location
@@ -80,4 +88,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
   identity {
     type = "SystemAssigned"
   }
+}
+
+# add AcrPull role to the identity the kubernetes cluster was assigned
+resource "azurerm_role_assignment" "kube_to_acr" {
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }

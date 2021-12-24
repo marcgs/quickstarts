@@ -1,1 +1,3 @@
 # appinsights.instrumentationKey: <INSTRUMENTATION_KEY>
+# acr.name
+# subtract.image_tag
